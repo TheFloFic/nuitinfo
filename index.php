@@ -1,8 +1,8 @@
 <?php
 //connexion VPS
-$bdd = new PDO('mysql:host=89.40.115.204;port=22;dbname=projet_nuit', 'root', "kaamelott");
+//$bdd = new PDO('mysql:host=localhost;port=22;dbname=projet_nuit', 'root', "kaamelott");
 //connexion locale
-//$bdd = new PDO('mysql:host=127.0.0.1;port=3306;dbname=projet_nuit', 'root', "");
+$bdd = new PDO('mysql:host=127.0.0.1;port=3306;dbname=projet_nuit', 'root', "");
 
 $bdd->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 $bdd->query('SET NAMES UTF8');
@@ -97,11 +97,12 @@ $bdd->query('SET NAMES UTF8');
       </div>
       <div class="row">
         <?php
-          $ville = isset($_POST['ville']) ? $_POST['ville'] : NULL;
-          $i=0;
           if(isset($_POST['ville'])){
+            $ville=$_POST['ville'];
             $resultat=$bdd->query("SELECT nom_item, quantite*importance/nb_refugie as prio  from ITEM, STOCK, VILLE where  ITEM.id_item=STOCK.id_item and VILLE.id_ville=STOCK.id_ville and VILLE.nom_ville like '". $ville ."' order by  prio");
-            while($r=$resultat->fetch()){
+          
+            echo '<form action="infoSup.php" method="post">';
+            while($r=$resultat->fetch()  ){
               if($r[1]>2){
                 $classPrio='b';
               }
@@ -111,8 +112,13 @@ $bdd->query('SET NAMES UTF8');
                 else{
                   $classPrio='h';
                 }
-              echo '<div class="col-lg-6"><div class=prio"'.$classPrio.'">'.$ville.' '.$r[0].' '.$r[1].'</div></div>'; 
+              echo '
+                  <input type="hidden" name="product" Value="'.$r[0].'">
+                  <input class=prio"'.$classPrio.'" type="submit" Value="'.$r[0].'">
+                  ';
+                
             }
+            echo '</form>';
           }
         ?>
       </div>
