@@ -30,7 +30,7 @@
       <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
     <![endif]-->
 
-    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+    <!-- <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
     <script>
       google.charts.load('upcoming', { 'packages': ['map'] });
       google.charts.setOnLoadCallback(drawMap);
@@ -52,9 +52,22 @@
 
         map.draw(data, options);
       };
-    </script>
+    </script> -->
   </head>
+  <?php
+    $ressource = $_post["item"];
+    $pdo = new PDO('mysql:host=89.40.115.204;port=22;dbname=projet_nuit', 'root', "kaamelott");
 
+    $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+    $pdo->query('SET NAMES UTF8');
+
+    $r = $pdo->query('SELECT TYPE.id_type FROM ITEM,TYPE_BESION WHERE ITEM.id_type = TYPE_BESOIN.id_type and '.$_post['item'].' = nom_item');
+
+    $nomasso = $pdo->query('SELECT ASSOCIATION.nom_asso from ASSOCIATION,TYPE_BESOIN WHERE ASSOCIATION.id_asso = '. $r);
+
+    $lieu = $pdo->query("SELECT adresse from ASSO_LIEU, VILLE, ASSOCIATION WHERE ASSOCIATION.id_asso = ASSO_LIEU.id_asso and VILLE.id_ville = ASSO_LIEU.id_ville and nom_asso = '".$nomasso."' ");
+  
+  ?>
   <body>
 
     <div class="container">
@@ -79,10 +92,7 @@
         <div class="col-lg-6">
           <p>pour faire un don de <?=echo $ressource?> vous pouvez aller a l'association <?=echo $nomasso?>  </p>
           <p>adresse : <?=echo $lieu?></p>          
-          <p>nombre de personne concerné : <?=echo $nbimmigrants?></p>
-          <p>importance de la denrée : <?=echo $importancedenree?></p>
-
-          
+         
         </div>
         <div class="col-lg-6">
           <div id="chart_div"></div>
